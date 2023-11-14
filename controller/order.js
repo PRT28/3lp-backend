@@ -10,7 +10,12 @@ const newOrder= async(req,res)=>{
             delivery_address,
             delivery_number,
             package_type,
-            parcel_value
+            parcel_value,
+            pickupCoordinatesX,
+             pickupCoordinatesY,
+             deliveryCoordinatesX, 
+             deliveryCoordinatesY, 
+             typeOfVehicle
         } = req.body;
         const user=req.user
         const createNewOrder=new  OrderModel({pickupPoint_address,
@@ -18,7 +23,11 @@ const newOrder= async(req,res)=>{
             delivery_address,
             delivery_number,
             package_type,
-            parcel_value,
+            parcel_value,pickupCoordinatesX,
+            pickupCoordinatesY,
+            deliveryCoordinatesX,
+            deliveryCoordinatesY, 
+            typeOfVehicle,
             userId:user._id
         })
         await createNewOrder.save()

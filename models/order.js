@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+import { packageType, vehicleType } from "../config/staticData";
 const { Schema, model } = mongoose;
 
 const OrderSchema = new Schema({
@@ -20,6 +21,7 @@ const OrderSchema = new Schema({
   },
   package_type: {
     type: String,
+    enum:packageType,
     require: true
   },
   parcel_value: {
@@ -29,10 +31,31 @@ const OrderSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     require: true
-  }
-},
-{ timestamps: true }
-);
+  },
+
+
+  pickupCoordinatesX:{
+    type: Number,
+    require: true
+  }, 
+  pickupCoordinatesY:{
+    type: Number,
+    require: true
+  }, 
+  deliveryCoordinatesX:{
+    type: Number,
+    require: true
+  },
+   deliveryCoordinatesY:{
+    type: Number,
+    require: true
+  }, typeOfVehicle:{
+    type: String,
+    enum:vehicleType,
+    require: true
+  }},
+
+{  timestamps:true });
 
 const OrderModel = model("order", OrderSchema);
 
