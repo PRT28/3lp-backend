@@ -1,19 +1,20 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
-
+const  {vehicleType}  =require("../config/staticData");
 const UserSchema = new Schema({
   username: {
     type: String,
     required: true,
     min: 2,
-    max: 100,
-    unique: true,
+    max: 100
   },
   mobile: {
     type: Number,
     required: true,
-    max: 15,
     unique: true,
+  },
+  email:{
+  type:String,
   },
   password: {
     type: String,
@@ -37,6 +38,11 @@ const UserSchema = new Schema({
   },
   account_type: {
     type: Number
+  },
+  typeOfVehicle:{
+    type: Number,
+    enum:vehicleType,
+    require: true
   }
 },
 { timestamps: true }

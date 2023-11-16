@@ -10,13 +10,15 @@ const cache = new NodeCache();
 const register = async (req, res) => {
     try {
         const {
-            name,
+            username,
             mobile,
             password,
             address,
-            zipcode,
+            email,
+            zip_code,
             user_role,
-            account_type
+            account_type,
+            typeOfVehicle
         } = req.body;
 
         const salt = await bcrypt.genSalt();
@@ -24,13 +26,15 @@ const register = async (req, res) => {
 
         if (user_role === 3) {
             const rider = new User({
-                name,
+                username,
                 mobile,
                 password: passwordHash,
                 address,
-                zipcode,
+                email,
+                zip_code,
                 user_role,
-                checked_in: false
+                checked_in: false,
+                typeOfVehicle
             })
             await rider.save()
                     .then(() => {
@@ -54,15 +58,16 @@ const register = async (req, res) => {
                     });
         } else {
             const user = new User({
-                name,
+                username,
                 mobile,
                 password: passwordHash,
                 address,
-                zipcode,
+                zip_code,
+                email,
                 user_role,
                 account_type
             })
-            await rider.save()
+            await user.save()
                     .then(data => {
                         const token = jwt.sign({user}, process.env.JWT_SECRET);
                         res.status(201).json({
@@ -96,9 +101,15 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const {
-            name, password
+            numberOrEmail, password
         } = req.body
-        const user = await User.findOne({ name });
+        user=undefined
+        if(!isNaN(numberOrEmail)){
+            user = await User.findOne({ mobile:numberOrEmail});
+        }
+        else{
+            user = await User.findOne({ email:numberOrEmail});
+        }
         if (!user) return res.status(400).json({ msg: "User does not exist. " });
         // if (user.status===false) return res.status(400).json({ msg: "Account is diabled" });
         const isMatch = await bcrypt.compare(password, user.password);
@@ -126,12 +137,16 @@ const login = async (req, res) => {
 
 const checkin = async (req, res) => {
     try {
-        const {user} = req;
+        const {user} = req.user;
+        if(user.user_role !== 3 ){
+            return res.status(403).json({ msg: "Only available for rider account" });
+        }
         const checkin = new CheckinModal({
             checkin_time: new Date().getTime(),
             checkout_time: null,
-            user_id: user._id
+            userId: user._id
         });
+        await User.findByIdAndUpdate(user._id, { checked_in: true })
         await checkin.save()
             .then(data => {
                 res.status(201).json({
@@ -162,8 +177,13 @@ const checkin = async (req, res) => {
 
 const checkout = async (req, res) => {
     try {
-        const {user} = req;
-        const checkin = CheckinModal.find({user_id: user._id, checkout_time: null});
+        const {user} = req.user;
+        if(user.user_role !== 3 ){
+            return res.status(403).json({ msg: "Only available for rider account" });
+        }
+        User.findByIdAndUpdate(user._id, { checked_in: false })
+        const checkin = await CheckinModal.findOne({userId: user._id, checkout_time: null});
+        console.log(checkin)
         if (!checkin) {
             res.status(400).json({
                 content: {
@@ -172,7 +192,8 @@ const checkout = async (req, res) => {
                 message: 'No active session for user'
             })
         } else {
-            await checkin.set('checkout_time', new Date().getTime())
+                checkin.$set('checkout_time', new Date().getTime())
+            await checkin.save()
                 .then(() => res.status(200).json({
                     content: {
                         status: true,

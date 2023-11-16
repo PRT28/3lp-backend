@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-import { packageType, vehicleType } from "../config/staticData";
+const  {vehicleType,packageType}  =require("../config/staticData");
+
 const { Schema, model } = mongoose;
 
 const OrderSchema = new Schema({
@@ -50,7 +51,7 @@ const OrderSchema = new Schema({
     type: Number,
     require: true
   }, typeOfVehicle:{
-    type: String,
+    type: Number,
     enum:vehicleType,
     require: true
   }},

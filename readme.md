@@ -8,3 +8,11 @@ User: 4
 Account Type (Only user type 4):-
 Personal: 0,
 Business: 1
+
+
+
+
+type of delivery
+0-truck
+1-two wheeler
+2-all India
