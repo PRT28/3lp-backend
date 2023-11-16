@@ -18,9 +18,33 @@ const register = async (req, res) => {
             zip_code,
             user_role,
             account_type,
-            typeOfVehicle
+            typeOfVehicle,
+            otp
         } = req.body;
-
+        const originalOtp = cache.get(mobile);
+        if (!originalOtp) {
+            res.status(404).json({
+                content: {
+                    status: false
+                },
+                message: 'Request Timeout'
+            })
+        } else if (originalOtp == otp) {
+            res.status(403).json({
+                content: {
+                    status: false
+                },
+                message: 'OTP Verification required'
+            })
+        } else if(originalOtp !== otp*(-1)){
+            cache.set(phone,otp*(-1),300);
+            res.status(401).json({
+                content: {
+                    status: true
+                },
+                message: 'Invalid OTP , Unauthorize'
+            })
+        }
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
 
@@ -256,7 +280,7 @@ const checkOtp = async (req, res) => {
                 message: 'Invalid OTP try again'
             })
         } else {
-            cache.del(phone);
+            cache.set(phone,otp*(-1),300);
             res.status(200).json({
                 content: {
                     status: true
