@@ -1,7 +1,5 @@
 const jwt =require ("jsonwebtoken");
-
-const twilio = require('twilio');
-const client = new twilio(process.env.TWILIO_SID, proccess.env.TWILIO_TOKEN);
+const client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
  const verifyToken = async (req, res, next) => {
   try {
