@@ -12,6 +12,10 @@ const CheckinSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     require: true
+  },
+  date: {
+    type: Date,
+    require: true
   }
 },
 { timestamps: true }

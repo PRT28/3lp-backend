@@ -19,32 +19,31 @@ const register = async (req, res) => {
             user_role,
             account_type,
             typeOfVehicle,
-            otp
         } = req.body;
-        const originalOtp = cache.get(mobile);
-        if (!originalOtp) {
-            res.status(404).json({
-                content: {
-                    status: false
-                },
-                message: 'Request Timeout'
-            })
-        } else if (originalOtp == otp) {
-            res.status(403).json({
-                content: {
-                    status: false
-                },
-                message: 'OTP Verification required'
-            })
-        } else if(originalOtp !== otp*(-1)){
-            cache.set(phone,otp*(-1),300);
-            res.status(401).json({
-                content: {
-                    status: true
-                },
-                message: 'Invalid OTP , Unauthorize'
-            })
-        }
+        // const originalOtp = cache.get(mobile);
+        // if (!originalOtp) {
+        //     res.status(404).json({
+        //         content: {
+        //             status: false
+        //         },
+        //         message: 'Request Timeout'
+        //     })
+        // } else if (originalOtp == otp) {
+        //     res.status(403).json({
+        //         content: {
+        //             status: false
+        //         },
+        //         message: 'OTP Verification required'
+        //     })
+        // } else if(originalOtp !== otp*(-1)){
+        //     cache.set(phone,otp*(-1),300);
+        //     res.status(401).json({
+        //         content: {
+        //             status: true
+        //         },
+        //         message: 'Invalid OTP , Unauthorize'
+        //     })
+        // }
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
 
@@ -127,7 +126,7 @@ const login = async (req, res) => {
         const {
             numberOrEmail, password
         } = req.body
-        user=undefined
+        let user;
         if(!isNaN(numberOrEmail)){
             user = await User.findOne({ mobile:numberOrEmail});
         }
