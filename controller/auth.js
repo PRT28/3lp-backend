@@ -2,6 +2,7 @@ const bcrypt= require("bcrypt");
 const jwt=require ("jsonwebtoken");
 const User= require("../models/user.js");
 const CheckinModal = require("../models/checkin.js");
+const RiderDetails = require("../models/riderDetails.js")
 const {sendMessage} = require("../config/globals.js");
 
 const NodeCache = require( "node-cache" );
@@ -20,30 +21,7 @@ const register = async (req, res) => {
             account_type,
             typeOfVehicle,
         } = req.body;
-        // const originalOtp = cache.get(mobile);
-        // if (!originalOtp) {
-        //     res.status(404).json({
-        //         content: {
-        //             status: false
-        //         },
-        //         message: 'Request Timeout'
-        //     })
-        // } else if (originalOtp == otp) {
-        //     res.status(403).json({
-        //         content: {
-        //             status: false
-        //         },
-        //         message: 'OTP Verification required'
-        //     })
-        // } else if(originalOtp !== otp*(-1)){
-        //     cache.set(phone,otp*(-1),300);
-        //     res.status(401).json({
-        //         content: {
-        //             status: true
-        //         },
-        //         message: 'Invalid OTP , Unauthorize'
-        //     })
-        // }
+        
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
 
@@ -61,11 +39,9 @@ const register = async (req, res) => {
             })
             await rider.save()
                     .then(() => {
-                        const token = jwt.sign({rider}, process.env.JWT_SECRET);
                         res.status(201).json({
                             content: {
-                                token,
-                                rider,
+                                user: rider,
                                 status: true
                             },
                             message: 'Rider Created Successfully'
@@ -137,10 +113,33 @@ const login = async (req, res) => {
         // if (user.status===false) return res.status(400).json({ msg: "Account is diabled" });
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
+
+        if (user.user_role === 3) {
+            const rider = await RiderDetails.aggregate([
+                {
+                  $lookup: {
+                    from: 'user',
+                    localField: 'riderId',
+                    foreignField: '_id',
+                    as: 'userDetails'
+                  }
+                },
+                {$unwind: "$userDetails"},
+                {$match: {"userDetails.mobile": numberOrEmail}}
+              ]);
+            const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
+            return res.status(200).json({
+                content: {
+                    token,
+                    rider,
+                    status: true
+                },
+                message: 'User Logged In Successfully'});
+        }
     
         const token = jwt.sign({user}, process.env.JWT_SECRET);
         user.$set('password', null);
-        res.status(200).json({
+        return res.status(200).json({
             content: {
                 token,
                 user,
@@ -287,6 +286,69 @@ const checkOtp = async (req, res) => {
                 message: 'OTP verified successfully'
             })
         }
+    } catch (e) {
+        res.status(500).json({
+            content: {
+                status: false
+            },
+            message: e.message
+        })
+    }
+}
+
+const updateRiderDetails = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {
+            profileImageUrl,
+            accountNumber,
+            bankName,
+            ifscCode,
+            idprooftype,
+            idFrontImgUrl,
+            idBackImgUrl,
+            panUrl,
+            dlBackUrl,
+            dlFrontUrl,
+            typeOfVehicle,
+            idNumber
+        } = req.body;
+        const user = await User.findByIdAndUpdate(id, {typeOfVehicle})
+        await new RiderDetails({
+            profileImageUrl,
+            accountNumber,
+            bankName,
+            ifscCode,
+            idprooftype,
+            idFrontImgUrl,
+            idBackImgUrl,
+            panUrl,
+            dlBackUrl,
+            dlFrontUrl,
+            idNumber
+        }).save();
+
+        const rider = await RiderDetails.aggregate([
+            {
+              $lookup: {
+                from: 'user',
+                localField: 'riderId',
+                foreignField: '_id',
+                as: 'userDetails'
+              }
+            },
+            {$unwind: "$userDetails"},
+            {$match: {"userDetails._id": id}}
+          ]);
+        const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
+        return res.status(201).json({
+            content: {
+                token,
+                user,
+                status: true
+            },
+            message: 'User Created Successfully'
+        })
     } catch (e) {
         res.status(500).json({
             content: {
