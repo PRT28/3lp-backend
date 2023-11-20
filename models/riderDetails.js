@@ -15,6 +15,8 @@ idNumber: {type: Number, required: true},
 panUrl:{type:String, required: true},
 dlBackUrl:{type:String, required: true},
 dlFrontUrl:{type:String, required: true},
+deliveryPref: {type: Number, required: true},
+workPref: {type: Number, required: true},
 riderId:{type: mongoose.Schema.Types.ObjectId, ref:'user'}})
 
 const RiderDetailModel = model("rider_detail", RiderDetailSchema);

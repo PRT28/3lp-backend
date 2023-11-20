@@ -15,7 +15,7 @@ router.post('/login', login);
 router.post('/register', register);
 router.post('/checkin', checkin);
 router.patch('/checkout', checkout);
-router.post("/rider/updateDetails", updateRiderDetails)
+router.post("/rider/updateDetails/:id", updateRiderDetails)
 router.get('/sendOtp', sendOtp);
 router.get('/checkOtp', checkOtp)
 

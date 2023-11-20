@@ -20,6 +20,7 @@ const register = async (req, res) => {
             user_role,
             account_type,
             typeOfVehicle,
+            gender
         } = req.body;
         
         const salt = await bcrypt.genSalt();
@@ -32,10 +33,10 @@ const register = async (req, res) => {
                 password: passwordHash,
                 address,
                 email,
-                zip_code,
                 user_role,
                 checked_in: false,
-                typeOfVehicle
+                typeOfVehicle,
+                gender
             })
             await rider.save()
                     .then(() => {
@@ -311,7 +312,10 @@ const updateRiderDetails = async (req, res) => {
             dlBackUrl,
             dlFrontUrl,
             typeOfVehicle,
-            idNumber
+            idNumber,
+            deliveryPref,
+            workPref,
+            zipCode
         } = req.body;
         const user = await User.findByIdAndUpdate(id, {typeOfVehicle})
         await new RiderDetails({
@@ -325,7 +329,10 @@ const updateRiderDetails = async (req, res) => {
             panUrl,
             dlBackUrl,
             dlFrontUrl,
-            idNumber
+            idNumber,
+            deliveryPref,
+            workPref,
+            zipCode
         }).save();
 
         const rider = await RiderDetails.aggregate([

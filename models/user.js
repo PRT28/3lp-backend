@@ -26,7 +26,6 @@ const UserSchema = new Schema({
   },
   zip_code:{
     type:String,
-    required: true
   },
   user_role: {
     type: Number,
@@ -43,6 +42,9 @@ const UserSchema = new Schema({
     type: Number,
     enum:vehicleType,
     require: true
+  },
+  gender: {
+    type: String
   }
 },
 { timestamps: true }
