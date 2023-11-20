@@ -365,5 +365,6 @@ module.exports = {
     checkin,
     checkout,
     sendOtp,
-    checkOtp
+    checkOtp,
+    updateRiderDetails
 }

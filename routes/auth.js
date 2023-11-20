@@ -4,7 +4,8 @@ const {
     sendOtp,
     checkOtp,
     checkin,
-    checkout
+    checkout,
+    updateRiderDetails
 } = require('../controller/auth');
 const  express = require("express");
 
@@ -12,8 +13,9 @@ const router = express.Router()
 
 router.post('/login', login);
 router.post('/register', register);
-router.post('/checkin', register);
-router.patch('/checkout', register);
+router.post('/checkin', checkin);
+router.patch('/checkout', checkout);
+router.post("/rider/updateDetails", updateRiderDetails)
 router.get('/sendOtp', sendOtp);
 router.get('/checkOtp', checkOtp)
 
