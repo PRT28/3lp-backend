@@ -401,6 +401,43 @@ const updateRiderDetails = async (req, res) => {
     }
 }
 
+const deleteUser = async (req, res) => {
+    try {
+        const {user} = req.user;
+        const {id} = req.params;
+        await User.findByIdAndDelete(id)
+            .then(async () => {
+                if (user.user_role === 3) {
+                    await RiderDetails.findOneAndDelete({riderId: id})
+                        .then(() => {
+                            res.status(200).json({
+                                content: {
+                                    status: true,
+                                    message: 'Rider deleted Successfully'
+                                }
+                            })
+                        })
+                } else {
+                    res.status(200).json({
+                        content: {
+                            status: true,
+                            message: 'Rider deleted Successfully'
+                        }
+                    })
+                }
+            })
+        
+
+    } catch (e) {
+        res.status(500).json({
+            content: {
+                status: false
+            },
+            message: e.message
+        })
+    }
+}
+
 module.exports = {
     register,
     login,
@@ -408,5 +445,6 @@ module.exports = {
     checkout,
     sendOtp,
     checkOtp,
-    updateRiderDetails
+    updateRiderDetails,
+    deleteUser
 }
