@@ -4,6 +4,7 @@ const User= require("../models/user.js");
 const CheckinModal = require("../models/checkin.js");
 const RiderDetails = require("../models/riderDetails.js")
 const {sendMessage} = require("../config/globals.js");
+const {s3Upload} = require('../config/globals.js');
 
 const NodeCache = require( "node-cache" );
 const cache = new NodeCache();
@@ -301,16 +302,10 @@ const updateRiderDetails = async (req, res) => {
     try {
         const {id} = req.params;
         const {
-            profileImageUrl,
             accountNumber,
             bankName,
             ifscCode,
             idprooftype,
-            idFrontImgUrl,
-            idBackImgUrl,
-            panUrl,
-            dlBackUrl,
-            dlFrontUrl,
             typeOfVehicle,
             idNumber,
             deliveryPref,
@@ -318,18 +313,56 @@ const updateRiderDetails = async (req, res) => {
             zipCode,
             riderId,
         } = req.body;
-        const user = await User.findByIdAndUpdate(id, {typeOfVehicle})
-        await new RiderDetails({
+        const {
             profileImageUrl,
-            accountNumber,
-            bankName,
-            ifscCode,
-            idprooftype,
             idFrontImgUrl,
             idBackImgUrl,
             panUrl,
             dlBackUrl,
             dlFrontUrl,
+        } = req.files
+        let profile = s3Upload({
+            Key: profileImageUrl.name,
+            Body: Buffer.from(profileImageUrl.data),
+            ContentType: profileImageUrl.mimtype
+        })
+        let idFront = s3Upload({
+            Key: idFrontImgUrl.name,
+            Body: Buffer.from(idFrontImgUrl.data),
+            ContentType: idFrontImgUrl.mimtype
+        })
+        let idBack = s3Upload({
+            Key: idBackImgUrl.name,
+            Body: Buffer.from(idBackImgUrl.data),
+            ContentType: idBackImgUrl.mimtype
+        })
+        let pan = s3Upload({
+            Key: panUrl.name,
+            Body: Buffer.from(panUrl.data),
+            ContentType: panUrl.mimtype
+        })
+        let dlFront = s3Upload({
+            Key: dlFrontUrl.name,
+            Body: Buffer.from(dlFrontUrl.data),
+            ContentType: dlFrontUrl.mimtype
+        })
+        let dlBack = s3Upload({
+            Key: dlBackUrl.name,
+            Body: Buffer.from(dlBackUrl.data),
+            ContentType: dlBackUrl.mimtype
+        })
+        const user = await User.findByIdAndUpdate(id, {typeOfVehicle});
+        await new RiderDetails({
+            profileImageUrl: profile,
+            accountNumber,
+            bankName,
+            ifscCode,
+            idprooftype,
+            idFrontImgUrl: idFront,
+            idBackImgUrl: idBack,
+            panUrl: pan,
+            dlBackUrl: dlFront,
+            dlFrontUrl: dlBack,
             idNumber,
             deliveryPref,
             workPref,

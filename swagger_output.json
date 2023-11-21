@@ -90,6 +90,9 @@
                 },
                 "typeOfVehicle": {
                   "example": "any"
+                },
+                "gender": {
+                  "example": "any"
                 }
               }
             }
@@ -108,47 +111,12 @@
     "/auth/checkin": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "username": {
-                  "example": "any"
-                },
-                "mobile": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "address": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "zip_code": {
-                  "example": "any"
-                },
-                "user_role": {
-                  "example": "any"
-                },
-                "account_type": {
-                  "example": "any"
-                },
-                "typeOfVehicle": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"
@@ -159,38 +127,84 @@
     "/auth/checkout": {
       "patch": {
         "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/rider/updateDetails/{id}": {
+      "post": {
+        "description": "",
         "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "username": {
+                "profileImageUrl": {
                   "example": "any"
                 },
-                "mobile": {
+                "accountNumber": {
                   "example": "any"
                 },
-                "password": {
+                "bankName": {
                   "example": "any"
                 },
-                "address": {
+                "ifscCode": {
                   "example": "any"
                 },
-                "email": {
+                "idprooftype": {
                   "example": "any"
                 },
-                "zip_code": {
+                "idFrontImgUrl": {
                   "example": "any"
                 },
-                "user_role": {
+                "idBackImgUrl": {
                   "example": "any"
                 },
-                "account_type": {
+                "panUrl": {
+                  "example": "any"
+                },
+                "dlBackUrl": {
+                  "example": "any"
+                },
+                "dlFrontUrl": {
                   "example": "any"
                 },
                 "typeOfVehicle": {
+                  "example": "any"
+                },
+                "idNumber": {
+                  "example": "any"
+                },
+                "deliveryPref": {
+                  "example": "any"
+                },
+                "workPref": {
+                  "example": "any"
+                },
+                "zipCode": {
+                  "example": "any"
+                },
+                "riderId": {
                   "example": "any"
                 }
               }
@@ -307,6 +321,16 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/order/test": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }

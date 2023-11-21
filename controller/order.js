@@ -60,7 +60,15 @@ const newOrder= async(req,res)=>{
     }
 }
 
+const test = async (req, res) => {
+    console.log(req.body);
+    res.status(200).json({
+        message: 'temp'
+    })
+}
+
 
 module.exports = {
-    newOrder
+    newOrder,
+    test
 }

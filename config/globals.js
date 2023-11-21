@@ -1,5 +1,8 @@
 const jwt =require ("jsonwebtoken");
 const client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
+const aws = require("aws-sdk")
+
+aws.config.update({region: 'us-east-1'});
 
  const verifyToken = async (req, res, next) => {
   try {
@@ -26,4 +29,27 @@ const sendMessage = (number, template) => {
   .then((message) => console.log(message.sid));
 }
 
-module.exports = {verifyToken, sendMessage}
+const s3 = new aws.S3({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_ACCESS_SECRET
+  }
+})
+
+const s3Upload = (params) => {
+  const uploadParams = {
+    ...params,
+    Bucket: 'randomjoy',
+    ACL: 'public-read'
+  }
+  s3.upload(uploadParams, (err, data) => {
+    if (data) {
+      return data.Location;
+    }
+    if (err) {
+      return err
+    }
+  })
+}
+
+module.exports = {verifyToken, sendMessage, s3Upload}

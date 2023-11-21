@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require('mongoose');
+const fileUplaod = require('express-fileupload')
 const swaggerUi = require("swagger-ui-express");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
@@ -13,10 +14,12 @@ const orderRoutes = require('./routes/order');
 const assignOrderRoutes = require('./routes/assignOrder');
 const attendenceRoutes = require('./routes/attendence');
 const NotificationRoutes = require('./routes/riderNotification');
+const fileUpload = require("express-fileupload");
 
 const app = express();
 
 app.use(helmet());
+app.use(fileUpload());
 app.use(cors({
     credentials: true,
     origin: true
