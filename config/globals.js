@@ -36,12 +36,47 @@ const s3 = new aws.S3({
   }
 })
 
-const s3Upload = (params) => {
+// async function createFolder(Bucket, Key) {
+//   const client = new S3Client();
+//   const command = new PutObjectCommand({ Bucket, Key });
+//   return client.send(command);
+// }
+
+// async function existsFolder(Bucket, Key) {
+//   const client = new S3Client();
+//   const command = new HeadObjectCommand({ Bucket, Key });
+
+//   try {
+//     await client.send(command);
+//     return true;
+//   } catch (error) {
+//     if (error.name === "NotFound") {
+//       return false;
+//     } else {
+//       throw error;
+//     }
+//   }
+// }
+
+// async function createFolderIfNotExist(Bucket, Key) {
+//   if (!(await existsFolder(Bucket, Key))) {
+//     return createFolder(Bucket, Key);
+//   }
+// }
+
+// async function deleteFolder(Bucket, Key) {
+//   const client = new S3Client();
+//   const command = new DeleteObjectCommand({ Bucket, Key });
+//   return client.send(command);
+// }
+
+const s3Upload = (params, id) => {
   const uploadParams = {
     ...params,
-    Bucket: 'randomjoy',
+    Bucket: `randomjoy/${id}/`,
     ACL: 'public-read'
   }
+
   s3.upload(uploadParams, (err, data) => {
     if (data) {
       return data.Location;

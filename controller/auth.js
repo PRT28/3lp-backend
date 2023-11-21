@@ -322,32 +322,32 @@ const updateRiderDetails = async (req, res) => {
             dlFrontUrl,
         } = req.files
         let profile = s3Upload({
-            Key: profileImageUrl.name,
+            Key:`profile.${profileImageUrl.name.split('.')[1]}`,
             Body: Buffer.from(profileImageUrl.data),
             ContentType: profileImageUrl.mimtype
         })
         let idFront = s3Upload({
-            Key: idFrontImgUrl.name,
+            Key: `idFront.${idFrontImgUrl.name.split('.')[1]}`,
             Body: Buffer.from(idFrontImgUrl.data),
             ContentType: idFrontImgUrl.mimtype
         })
         let idBack = s3Upload({
-            Key: idBackImgUrl.name,
+            Key: `idBack.${idBackImgUrl.name.split('.')[1]}`,
             Body: Buffer.from(idBackImgUrl.data),
             ContentType: idBackImgUrl.mimtype
         })
         let pan = s3Upload({
-            Key: panUrl.name,
+            Key: `pan.${panUrl.name.split('.')[1]}`,
             Body: Buffer.from(panUrl.data),
             ContentType: panUrl.mimtype
         })
         let dlFront = s3Upload({
-            Key: dlFrontUrl.name,
+            Key: `dlFront.${dlFrontUrl.name.split('.')[1]}`,
             Body: Buffer.from(dlFrontUrl.data),
             ContentType: dlFrontUrl.mimtype
         })
         let dlBack = s3Upload({
-            Key: dlBackUrl.name,
+            Key: `dlBack.${dlBackUrl.name.split('.')[1]}`,
             Body: Buffer.from(dlBackUrl.data),
             ContentType: dlBackUrl.mimtype
         })

@@ -108,6 +108,19 @@
         }
       }
     },
+    "/auth/delete": {
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/auth/checkin": {
       "post": {
         "description": "",
@@ -159,9 +172,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "profileImageUrl": {
-                  "example": "any"
-                },
                 "accountNumber": {
                   "example": "any"
                 },
@@ -172,21 +182,6 @@
                   "example": "any"
                 },
                 "idprooftype": {
-                  "example": "any"
-                },
-                "idFrontImgUrl": {
-                  "example": "any"
-                },
-                "idBackImgUrl": {
-                  "example": "any"
-                },
-                "panUrl": {
-                  "example": "any"
-                },
-                "dlBackUrl": {
-                  "example": "any"
-                },
-                "dlFrontUrl": {
                   "example": "any"
                 },
                 "typeOfVehicle": {
