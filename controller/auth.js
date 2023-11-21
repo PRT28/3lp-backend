@@ -315,7 +315,8 @@ const updateRiderDetails = async (req, res) => {
             idNumber,
             deliveryPref,
             workPref,
-            zipCode
+            zipCode,
+            riderId,
         } = req.body;
         const user = await User.findByIdAndUpdate(id, {typeOfVehicle})
         await new RiderDetails({
@@ -332,7 +333,8 @@ const updateRiderDetails = async (req, res) => {
             idNumber,
             deliveryPref,
             workPref,
-            zipCode
+            zipCode,
+            riderId
         }).save();
 
         const rider = await RiderDetails.aggregate([
