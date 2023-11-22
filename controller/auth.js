@@ -5,6 +5,7 @@ const CheckinModal = require("../models/checkin.js");
 const RiderDetails = require("../models/riderDetails.js")
 const {sendMessage} = require("../config/globals.js");
 const {s3Upload} = require('../config/globals.js');
+const mongoose=require('mongoose')
 
 const NodeCache = require( "node-cache" );
 const cache = new NodeCache();
@@ -457,7 +458,57 @@ const getAllRiders = async (req, res) => {
         })
     }
 } 
-
+const getDetailsFromToken=async(req,res)=>{
+    const user=req.user
+    if(!user){
+        res.status(401).json({ msg: "User does not exist. " });
+    }else if(user.user_role!=3)
+    {
+        const UserDetails =await User.findById(user._id)
+        if(UserDetails) {
+            res.status(200).json({
+                content: {
+                    status: true,
+                    UserDetails
+                }
+            })
+        }else{
+            res.status(404).json({
+                content: {
+                    status: false,
+                },
+                message:'Unable to find user'
+            })
+        }
+    }
+    else if(user.user_role==3){
+    const UserDetails =await mongoose.model('user').aggregate([
+        { $match: { _id: user.user_id } },
+        {
+            $lookup: {
+                from: 'rider_detail',
+                "localField": "_id",
+                "foreignField": "riderId",
+                "as": "detail"
+            }
+        }])
+        if(UserDetails) {
+            res.status(200).json({
+                content: {
+                    status: true,
+                    UserDetails
+                }
+            })
+        }else{
+            res.status(404).json({
+                content: {
+                    status: false,
+                },
+                message:'Unable to find user'
+            })
+        }
+    }
+}
 module.exports = {
     register,
     login,
@@ -467,5 +518,6 @@ module.exports = {
     checkOtp,
     updateRiderDetails,
     deleteUser,
-    getAllRiders
+    getAllRiders,
+    getDetailsFromToken
 }
