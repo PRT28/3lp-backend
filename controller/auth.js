@@ -438,6 +438,26 @@ const deleteUser = async (req, res) => {
     }
 }
 
+export const getAllRiders = async (req, res) => {
+    try {
+        const riders = await User.find({user_role: 3})
+        res.status(200).json({
+            content: {
+                riders,
+                status: true
+            },
+            message: 'Riders fetched Successfully'
+        })
+    }  catch (e) {
+        res.status(500).json({
+            content: {
+                status: false
+            },
+            message: e.message
+        })
+    }
+} 
+
 module.exports = {
     register,
     login,
@@ -446,5 +466,6 @@ module.exports = {
     sendOtp,
     checkOtp,
     updateRiderDetails,
-    deleteUser
+    deleteUser,
+    getAllRiders
 }

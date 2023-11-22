@@ -1,3 +1,4 @@
+const { verifyToken } = require('../config/globals');
 const {
     login,
     register,
@@ -6,7 +7,8 @@ const {
     checkin,
     checkout,
     updateRiderDetails,
-    deleteUser
+    deleteUser,
+    getAllRiders
 } = require('../controller/auth');
 const  express = require("express");
 
@@ -20,5 +22,6 @@ router.patch('/checkout', checkout);
 router.post("/rider/updateDetails/:id", updateRiderDetails)
 router.get('/sendOtp', sendOtp);
 router.get('/checkOtp', checkOtp)
+router.get('/riders', verifyToken, getAllRiders)
 
 module.exports = router
