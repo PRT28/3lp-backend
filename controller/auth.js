@@ -438,7 +438,7 @@ const deleteUser = async (req, res) => {
     }
 }
 
-export const getAllRiders = async (req, res) => {
+const getAllRiders = async (req, res) => {
     try {
         const riders = await User.find({user_role: 3})
         res.status(200).json({
