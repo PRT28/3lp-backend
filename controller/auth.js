@@ -118,18 +118,16 @@ const login = async (req, res) => {
         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
         if (user.user_role === 3) {
-            const rider = await RiderDetails.aggregate([
+            await User.aggregate([
+                { $match: { _id: user.user_id } },
                 {
-                  $lookup: {
-                    from: 'user',
-                    localField: 'riderId',
-                    foreignField: '_id',
-                    as: 'userDetails'
-                  }
-                },
-                {$unwind: "$userDetails"},
-                {$match: {"userDetails.mobile": numberOrEmail}}
-              ]);
+                    $lookup: {
+                        from: 'rider_detail',
+                        "localField": "_id",
+                        "foreignField": "riderId",
+                        "as": "detail"
+                    }
+                }])
             const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
             return res.status(200).json({
                 content: {
@@ -371,18 +369,16 @@ const updateRiderDetails = async (req, res) => {
             riderId
         }).save();
 
-        const rider = await RiderDetails.aggregate([
+        const rider = await User.aggregate([
+            { $match: { _id: user.user_id } },
             {
-              $lookup: {
-                from: 'user',
-                localField: 'riderId',
-                foreignField: '_id',
-                as: 'userDetails'
-              }
-            },
-            {$unwind: "$userDetails"},
-            {$match: {"userDetails._id": id}}
-          ]);
+                $lookup: {
+                    from: 'rider_detail',
+                    "localField": "_id",
+                    "foreignField": "riderId",
+                    "as": "detail"
+                }
+            }])
         const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
         return res.status(201).json({
             content: {
@@ -482,7 +478,7 @@ const getDetailsFromToken=async(req,res)=>{
         }
     }
     else if(user.user_role==3){
-    const UserDetails =await mongoose.model('user').aggregate([
+    const UserDetails =await User.aggregate([
         { $match: { _id: user.user_id } },
         {
             $lookup: {
