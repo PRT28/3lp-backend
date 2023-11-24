@@ -8,7 +8,7 @@ const {
     checkout,
     updateRiderDetails,
     deleteUser,
-    getAllRiders
+    getAllUsers
 } = require('../controller/auth');
 const  express = require("express");
 
@@ -22,6 +22,6 @@ router.patch('/checkout', checkout);
 router.post("/rider/updateDetails/:id", updateRiderDetails)
 router.get('/sendOtp', sendOtp);
 router.get('/checkOtp', checkOtp)
-router.get('/riders', verifyToken, getAllRiders)
+router.get('/riders', verifyToken, getAllUsers)
 
 module.exports = router

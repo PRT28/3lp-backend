@@ -5,7 +5,6 @@ const CheckinModal = require("../models/checkin.js");
 const RiderDetails = require("../models/riderDetails.js")
 const {sendMessage} = require("../config/globals.js");
 const {s3Upload} = require('../config/globals.js');
-const mongoose=require('mongoose')
 
 const NodeCache = require( "node-cache" );
 const cache = new NodeCache();
@@ -118,16 +117,18 @@ const login = async (req, res) => {
         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
         if (user.user_role === 3) {
-            await User.aggregate([
-                { $match: { _id: user.user_id } },
+            const rider = await RiderDetails.aggregate([
                 {
-                    $lookup: {
-                        from: 'rider_detail',
-                        "localField": "_id",
-                        "foreignField": "riderId",
-                        "as": "detail"
-                    }
-                }])
+                  $lookup: {
+                    from: 'user',
+                    localField: 'riderId',
+                    foreignField: '_id',
+                    as: 'userDetails'
+                  }
+                },
+                {$unwind: "$userDetails"},
+                {$match: {"userDetails.mobile": numberOrEmail}}
+              ]);
             const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
             return res.status(200).json({
                 content: {
@@ -369,16 +370,18 @@ const updateRiderDetails = async (req, res) => {
             riderId
         }).save();
 
-        const rider = await User.aggregate([
-            { $match: { _id: user.user_id } },
+        const rider = await RiderDetails.aggregate([
             {
-                $lookup: {
-                    from: 'rider_detail',
-                    "localField": "_id",
-                    "foreignField": "riderId",
-                    "as": "detail"
-                }
-            }])
+              $lookup: {
+                from: 'user',
+                localField: 'riderId',
+                foreignField: '_id',
+                as: 'userDetails'
+              }
+            },
+            {$unwind: "$userDetails"},
+            {$match: {"userDetails._id": id}}
+          ]);
         const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
         return res.status(201).json({
             content: {
@@ -435,16 +438,29 @@ const deleteUser = async (req, res) => {
     }
 }
 
-const getAllRiders = async (req, res) => {
+const getAllUsers = async (req, res) => {
     try {
-        const riders = await User.find({user_role: 3})
-        res.status(200).json({
-            content: {
-                riders,
-                status: true
-            },
-            message: 'Riders fetched Successfully'
-        })
+        const {role} = req.query
+        if (role) {
+            const riders = await User.find({user_role: role})
+            res.status(200).json({
+                content: {
+                    riders,
+                    status: true
+                },
+                message: 'Riders fetched Successfully'
+            })
+        } else {
+            const riders = await User.find({})
+            res.status(200).json({
+                content: {
+                    riders,
+                    status: true
+                },
+                message: 'Riders fetched Successfully'
+            })
+        }
+        
     }  catch (e) {
         res.status(500).json({
             content: {
@@ -454,57 +470,7 @@ const getAllRiders = async (req, res) => {
         })
     }
 } 
-const getDetailsFromToken=async(req,res)=>{
-    const user=req.user
-    if(!user){
-        res.status(401).json({ msg: "User does not exist. " });
-    }else if(user.user_role!=3)
-    {
-        const UserDetails =await User.findById(user._id)
-        if(UserDetails) {
-            res.status(200).json({
-                content: {
-                    status: true,
-                    UserDetails
-                }
-            })
-        }else{
-            res.status(404).json({
-                content: {
-                    status: false,
-                },
-                message:'Unable to find user'
-            })
-        }
-    }
-    else if(user.user_role==3){
-    const UserDetails =await User.aggregate([
-        { $match: { _id: user.user_id } },
-        {
-            $lookup: {
-                from: 'rider_detail',
-                "localField": "_id",
-                "foreignField": "riderId",
-                "as": "detail"
-            }
-        }])
-        if(UserDetails) {
-            res.status(200).json({
-                content: {
-                    status: true,
-                    UserDetails
-                }
-            })
-        }else{
-            res.status(404).json({
-                content: {
-                    status: false,
-                },
-                message:'Unable to find user'
-            })
-        }
-    }
-}
+
 module.exports = {
     register,
     login,
@@ -514,6 +480,5 @@ module.exports = {
     checkOtp,
     updateRiderDetails,
     deleteUser,
-    getAllRiders,
-    getDetailsFromToken
+    getAllUsers
 }

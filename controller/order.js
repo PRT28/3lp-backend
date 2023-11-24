@@ -60,6 +60,26 @@ const newOrder= async(req,res)=>{
     }
 }
 
+const getAllOrders = async (req, res) => {
+    try {
+        const orders = await OrderModel.find({});
+        res.status(200).json({
+            content: {
+                orders,
+                status: true
+            },
+            message: 'Orders fetched Successfully'
+        })
+    } catch(err){
+        res.status(500).json({
+            content: {
+                status: false
+            },
+            message: `Failed to created orderr! ${err.message}`
+        })
+    }
+}
+
 const test = async (req, res) => {
     console.log(req.files);
     res.status(200).json({
@@ -70,5 +90,6 @@ const test = async (req, res) => {
 
 module.exports = {
     newOrder,
-    test
+    test,
+    getAllOrders
 }
