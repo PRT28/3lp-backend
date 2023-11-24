@@ -22,6 +22,6 @@ router.patch('/checkout', checkout);
 router.post("/rider/updateDetails/:id", updateRiderDetails)
 router.get('/sendOtp', sendOtp);
 router.get('/checkOtp', checkOtp)
-router.get('/riders', verifyToken, getAllUsers)
+router.get('/', verifyToken, getAllUsers)
 
 module.exports = router
