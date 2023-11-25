@@ -49,14 +49,7 @@ const register = async (req, res) => {
                             message: 'Rider Created Successfully'
                         })
                     })
-                    .catch(e => {
-                        res.status(500).json({
-                            content: {
-                                status: false
-                            },
-                            message: `Failed to created rider! ${e.message}`
-                        })
-                    });
+                    
         } else {
             const user = new User({
                 username,
@@ -80,14 +73,7 @@ const register = async (req, res) => {
                             message: 'User Created Successfully'
                         })
                     })
-                    .catch(e => {
-                        res.status(500).json({
-                            content: {
-                                status: false
-                            },
-                            message: `Failed to created user! ${e.message}`
-                        })
-                    });
+                   
         }
     } catch (e) {
         res.status(500).json({
@@ -180,14 +166,7 @@ const checkin = async (req, res) => {
                     message: 'Rider Logged in Successfully'
                 })
             })
-            .catch(e => {
-                res.status(500).json({
-                    content: {
-                        status: false
-                    },
-                    message: `Failed to clock in rider! ${e.message}`
-                })
-            });
+          
 
     } catch (e) {
         res.status(500).json({
