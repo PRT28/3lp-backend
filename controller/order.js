@@ -19,12 +19,14 @@ const newOrder= async(req,res)=>{
              typeOfVehicle
         } = req.body;
         const user=req.user
-        const createNewOrder=new  OrderModel({pickupPoint_address,
+        const createNewOrder=new  OrderModel({
+            pickupPoint_address,
             pickupPoint_number,
             delivery_address,
             delivery_number,
             package_type,
-            parcel_value,pickupCoordinatesX,
+            parcel_value,
+            pickupCoordinatesX,
             pickupCoordinatesY,
             deliveryCoordinatesX,
             deliveryCoordinatesY, 
@@ -60,26 +62,6 @@ const newOrder= async(req,res)=>{
     }
 }
 
-const getAllOrders = async (req, res) => {
-    try {
-        const orders = await OrderModel.find({});
-        res.status(200).json({
-            content: {
-                orders,
-                status: true
-            },
-            message: 'Orders fetched Successfully'
-        })
-    } catch(err){
-        res.status(500).json({
-            content: {
-                status: false
-            },
-            message: `Failed to created orderr! ${err.message}`
-        })
-    }
-}
-
 const test = async (req, res) => {
     console.log(req.files);
     res.status(200).json({
@@ -90,6 +72,5 @@ const test = async (req, res) => {
 
 module.exports = {
     newOrder,
-    test,
-    getAllOrders
+    test
 }

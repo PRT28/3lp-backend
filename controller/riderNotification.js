@@ -16,15 +16,6 @@ const createRiderNotification= async(req,res)=>{
                 message: 'Notification Created Successfully'
             })
         })
-        .catch(e => {
-            res.status(500).json({
-                content: {
-                    status: false
-                },
-                message: `Failed to created Notification! ${e.message}`
-            })
-        })
-
     }catch(err){
         res.status(500).json({
             content: {
@@ -51,14 +42,6 @@ const getAssignedOrder=async(req,res)=>{
                 data:list.json()
             },
             message: 'Assigned order fetched successfully'
-        })
-    })
-    .catch(e => {
-        res.status(500).json({
-            content: {
-                status: false
-            },
-            message: `Failed to fetch assigned Order! ${e.message}`
         })
     })
     }catch(err){
@@ -124,14 +107,7 @@ const skipOrder=async(req,res)=>{
             message: 'Skipped Successfully'
         })
     })
-    .catch(e => {
-        res.status(500).json({
-            content: {
-                status: false
-            },
-            message: `unable to skip order Order! ${e.message}`
-        })
-    })
+    
     }catch(err){
         res.status(500).json({
             content: {
@@ -161,14 +137,7 @@ const acceptOrder=async(req,res)=>{
             message: 'Accepted Successfully'
         })
     })
-    .catch(e => {
-        res.status(500).json({
-            content: {
-                status: false
-            },
-            message: `unable to accept Order! ${e.message}`
-        })
-    })
+    
     }catch(err){
         res.status(500).json({
             content: {
