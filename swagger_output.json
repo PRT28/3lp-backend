@@ -156,7 +156,67 @@
         }
       }
     },
-    "/auth/rider/updateDetails/{id}": {
+    "/auth/rider/createRiderDetails/{id}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accountNumber": {
+                  "example": "any"
+                },
+                "bankName": {
+                  "example": "any"
+                },
+                "ifscCode": {
+                  "example": "any"
+                },
+                "idprooftype": {
+                  "example": "any"
+                },
+                "typeOfVehicle": {
+                  "example": "any"
+                },
+                "idNumber": {
+                  "example": "any"
+                },
+                "deliveryPref": {
+                  "example": "any"
+                },
+                "workPref": {
+                  "example": "any"
+                },
+                "zipCode": {
+                  "example": "any"
+                },
+                "riderId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/rider/updateRiderDetails/{id}": {
       "post": {
         "description": "",
         "parameters": [
@@ -255,13 +315,18 @@
         }
       }
     },
-    "/auth/riders": {
+    "/auth/": {
       "get": {
         "description": "",
         "parameters": [
           {
             "name": "Authorization",
             "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "in": "query",
             "type": "string"
           }
         ],
@@ -333,6 +398,29 @@
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/order/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           },
           "403": {
             "description": "Forbidden"

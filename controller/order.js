@@ -13,10 +13,10 @@ const newOrder= async(req,res)=>{
             package_type,
             parcel_value,
             pickupCoordinatesX,
-             pickupCoordinatesY,
-             deliveryCoordinatesX, 
-             deliveryCoordinatesY, 
-             typeOfVehicle
+            pickupCoordinatesY,
+            deliveryCoordinatesX, 
+            deliveryCoordinatesY, 
+            typeOfVehicle
         } = req.body;
         const user=req.user
         const createNewOrder=new  OrderModel({pickupPoint_address,

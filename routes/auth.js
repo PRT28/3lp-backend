@@ -6,8 +6,9 @@ const {
     checkOtp,
     checkin,
     checkout,
-    updateRiderDetails,
+    createRiderDetails,
     deleteUser,
+    updateRiderDetails,
     getAllUsers
 } = require('../controller/auth');
 const  express = require("express");
@@ -19,7 +20,8 @@ router.post('/register', register);
 router.delete('/delete', deleteUser)
 router.post('/checkin', checkin);
 router.patch('/checkout', checkout);
-router.post("/rider/updateDetails/:id", updateRiderDetails)
+router.post("/rider/createRiderDetails/:id", createRiderDetails)
+router.post("/rider/updateRiderDetails/:id", updateRiderDetails)
 router.get('/sendOtp', sendOtp);
 router.get('/checkOtp', checkOtp)
 router.get('/', verifyToken, getAllUsers)

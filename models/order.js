@@ -8,15 +8,15 @@ const OrderSchema = new Schema({
     type: String,
     require: true
   },
-  pickupPoint_phone: {
+  pickupPoint_number: {
     type: String,
     require: true
   },
-  deliveryPoint_address: {
+  delivery_address: {
     type: String,
     require: true
   },
-  deliveryPoint_phone: {
+  delivery_number: {
     type: String,
     require: true
   },
@@ -33,8 +33,6 @@ const OrderSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     require: true
   },
-
-
   pickupCoordinatesX:{
     type: Number,
     require: true

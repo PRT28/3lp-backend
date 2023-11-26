@@ -298,7 +298,7 @@ const checkOtp = async (req, res) => {
     }
 }
 
-const updateRiderDetails = async (req, res) => {
+const createRiderDetails = async (req, res) => {
     try {
         const {id} = req.params;
         const {
@@ -369,6 +369,108 @@ const updateRiderDetails = async (req, res) => {
             zipCode,
             riderId
         }).save();
+
+        const rider = await RiderDetails.aggregate([
+            {
+              $lookup: {
+                from: 'user',
+                localField: 'riderId',
+                foreignField: '_id',
+                as: 'userDetails'
+              }
+            },
+            {$unwind: "$userDetails"},
+            {$match: {"userDetails._id": id}}
+          ]);
+        const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
+        return res.status(201).json({
+            content: {
+                token,
+                user,
+                status: true
+            },
+            message: 'User Created Successfully'
+        })
+    } catch (e) {
+        res.status(500).json({
+            content: {
+                status: false
+            },
+            message: e.message
+        })
+    }
+}
+const updateRiderDetails = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {
+            accountNumber,
+            bankName,
+            ifscCode,
+            idprooftype,
+            typeOfVehicle,
+            idNumber,
+            deliveryPref,
+            workPref,
+            zipCode,
+            riderId,
+        } = req.body;
+        const {
+            profileImageUrl,
+            idFrontImgUrl,
+            idBackImgUrl,
+            panUrl,
+            dlBackUrl,
+            dlFrontUrl,
+        } = req.files
+        let profile = s3Upload({
+            Key:`profile.${profileImageUrl.name.split('.')[1]}`,
+            Body: Buffer.from(profileImageUrl.data),
+            ContentType: profileImageUrl.mimtype
+        })
+        let idFront = s3Upload({
+            Key: `idFront.${idFrontImgUrl.name.split('.')[1]}`,
+            Body: Buffer.from(idFrontImgUrl.data),
+            ContentType: idFrontImgUrl.mimtype
+        })
+        let idBack = s3Upload({
+            Key: `idBack.${idBackImgUrl.name.split('.')[1]}`,
+            Body: Buffer.from(idBackImgUrl.data),
+            ContentType: idBackImgUrl.mimtype
+        })
+        let pan = s3Upload({
+            Key: `pan.${panUrl.name.split('.')[1]}`,
+            Body: Buffer.from(panUrl.data),
+            ContentType: panUrl.mimtype
+        })
+        let dlFront = s3Upload({
+            Key: `dlFront.${dlFrontUrl.name.split('.')[1]}`,
+            Body: Buffer.from(dlFrontUrl.data),
+            ContentType: dlFrontUrl.mimtype
+        })
+        let dlBack = s3Upload({
+            Key: `dlBack.${dlBackUrl.name.split('.')[1]}`,
+            Body: Buffer.from(dlBackUrl.data),
+            ContentType: dlBackUrl.mimtype
+        })
+        const user = await User.findByIdAndUpdate(id, {typeOfVehicle});
+        await  RiderDetails.findOneAndUpdate({riderId:user._id},{
+            profileImageUrl: profile,
+            accountNumber,
+            bankName,
+            ifscCode,
+            idprooftype,
+            idFrontImgUrl: idFront,
+            idBackImgUrl: idBack,
+            panUrl: pan,
+            dlBackUrl: dlFront,
+            dlFrontUrl: dlBack,
+            idNumber,
+            deliveryPref,
+            workPref,
+            zipCode,
+            riderId
+        });
 
         const rider = await RiderDetails.aggregate([
             {
@@ -478,6 +580,7 @@ module.exports = {
     checkout,
     sendOtp,
     checkOtp,
+    createRiderDetails,
     updateRiderDetails,
     deleteUser,
     getAllUsers
