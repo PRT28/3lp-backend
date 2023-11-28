@@ -234,7 +234,26 @@ const checkout = async (req, res) => {
         })
     }
 }
-
+const calender = async (req, res) => {
+    try {
+        const{userId}=req.param;
+        const checkin = await CheckinModal.find({userId});
+            res.status(200).json({
+                content: {
+                    status: true,
+                    data:checkin
+                },
+                message: 'Calender Fetched Successfully'
+            })
+        }catch (e) {
+        res.status(500).json({
+            content: {
+                status: false
+            },
+            message: e.message
+        })
+    }
+}
 const sendOtp = async (req, res) => {
     try {
         const {phone} = req.query;
@@ -476,6 +495,7 @@ module.exports = {
     login,
     checkin,
     checkout,
+    calender,
     sendOtp,
     checkOtp,
     updateRiderDetails,

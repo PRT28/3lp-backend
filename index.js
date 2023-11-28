@@ -22,7 +22,7 @@ app.use(helmet());
 app.use(fileUpload());
 app.use(cors({
     credentials: true,
-    origin: true
+    origin: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
