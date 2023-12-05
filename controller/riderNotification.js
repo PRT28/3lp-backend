@@ -36,11 +36,11 @@ const createRiderNotification= async(req,res)=>{
 }
 const getAssignedOrder=async(req,res)=>{
     try{
-        const user=req.user
-        if(!user){
+        const {user}=req.user
+        console.log(user.user_role)
+        if(!user) {
             res.status(401).json({ msg: "User does not exist. " });
-        }else if(user.user_role!=3)
-        {
+        } else if(user.user_role !== 3) {
             res.status(403).json({ msg: "Forbidden. Only available for Rider"});
         }
         
@@ -48,7 +48,7 @@ const getAssignedOrder=async(req,res)=>{
         res.status(201).json({
             content: {
                 status: true,
-                data:list.json()
+                list
             },
             message: 'Assigned order fetched successfully'
         })
