@@ -41,10 +41,12 @@ const register = async (req, res) => {
             })
             await rider.save()
                     .then(() => {
+                        const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
                         res.status(201).json({
                             content: {
                                 user: rider,
-                                status: true
+                                status: true,
+                                token
                             },
                             message: 'Rider Created Successfully'
                         })
