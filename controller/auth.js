@@ -114,32 +114,33 @@ const login = async (req, res) => {
             user = await User.findOne({ email:numberOrEmail});
         }
         if (!user) return res.status(400).json({ msg: "User does not exist. " });
+        console.log(user);
         // if (user.status===false) return res.status(400).json({ msg: "Account is diabled" });
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
-        if (user.user_role === 3) {
-            const rider = await RiderDetails.aggregate([
-                {
-                  $lookup: {
-                    from: 'user',
-                    localField: 'riderId',
-                    foreignField: '_id',
-                    as: 'userDetails'
-                  }
-                },
-                {$unwind: "$userDetails"},
-                {$match: {"userDetails.mobile": numberOrEmail}}
-              ]);
-            const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
-            return res.status(200).json({
-                content: {
-                    token,
-                    rider,
-                    status: true
-                },
-                message: 'User Logged In Successfully'});
-        }
+        // if (user.user_role === 3) {
+        //     const rider = await RiderDetails.aggregate([
+        //         {
+        //           $lookup: {
+        //             from: 'user',
+        //             localField: 'riderId',
+        //             foreignField: '_id',
+        //             as: 'userDetails'
+        //           }
+        //         },
+        //         {$unwind: "$userDetails"},
+        //         {$match: {"userDetails.mobile": numberOrEmail}}
+        //       ]);
+        //     const token = jwt.sign({user: rider}, process.env.JWT_SECRET);
+        //     return res.status(200).json({
+        //         content: {
+        //             token,
+        //             rider,
+        //             status: true
+        //         },
+        //         message: 'User Logged In Successfully'});
+        // }
     
         const token = jwt.sign({user}, process.env.JWT_SECRET);
         user.$set('password', null);
