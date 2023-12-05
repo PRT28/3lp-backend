@@ -207,7 +207,8 @@ const checkout = async (req, res) => {
         if(user.user_role !== 3 ){
             return res.status(403).json({ msg: "Only available for rider account" });
         }
-        User.findByIdAndUpdate(user._id, { checked_in: false })
+        console.log(user._id)
+        await User.findByIdAndUpdate(user._id, { checked_in: false })
         const checkin = await CheckinModal.findOne({userId: user._id, checkout_time: null});
         console.log(checkin)
         if (!checkin) {
