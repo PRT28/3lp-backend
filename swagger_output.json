@@ -255,13 +255,18 @@
         }
       }
     },
-    "/auth/riders": {
+    "/auth/": {
       "get": {
         "description": "",
         "parameters": [
           {
             "name": "Authorization",
             "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "in": "query",
             "type": "string"
           }
         ],
@@ -333,6 +338,29 @@
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/order/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           },
           "403": {
             "description": "Forbidden"
@@ -423,6 +451,35 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/attendence/calender/{userId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           },
           "403": {
             "description": "Forbidden"

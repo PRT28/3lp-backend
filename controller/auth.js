@@ -236,6 +236,19 @@ const checkout = async (req, res) => {
         })
     }
 }
+
+const authDetails = async (req, res) => {
+    try {
+      console.log(req.user.user._id)
+      await User.findOne({_id: req.user.user._id}).then(data => {
+        console.log(data);
+        res.status(200).json(data);
+      })
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+}
+
 const calender = async (req, res) => {
     try {
         const{userId}=req.param;
@@ -502,5 +515,6 @@ module.exports = {
     checkOtp,
     updateRiderDetails,
     deleteUser,
-    getAllUsers
+    getAllUsers,
+    authDetails
 }
